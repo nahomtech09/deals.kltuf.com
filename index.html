@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLTUF Deals — Best Prices Online</title>
+<meta name="description" content="Hand-picked deals updated daily. Huge discounts on electronics, home goods, toys, and more. Free shipping available.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://tiny-morning-80f9.kltufllc.workers.dev https://api.stripe.com https://www.paypal.com;">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#f3f4f6;min-height:100vh}
+
+header{background:#111827;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.4);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#b8860b,#f0c040);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#111;font-weight:900;font-size:18px}
+.logo-text{font-size:18px;font-weight:800;color:#f0c040;letter-spacing:2px}
+.logo-sub{font-size:11px;color:#9ca3af;margin-left:4px;font-weight:500}
+.cart-btn{background:#f0c040;color:#111;border:none;padding:9px 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;gap:6px}
+.cart-count{background:#111;color:#f0c040;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+
+.hero{background:linear-gradient(135deg,#111827 0%,#1f2937 100%);padding:40px 24px;text-align:center;border-bottom:1px solid #1f2937}
+.hero h1{font-size:2rem;font-weight:900;color:#f0c040;margin-bottom:8px}
+.hero p{color:#9ca3af;font-size:0.95rem;margin-bottom:18px}
+.refresh-badge{display:inline-flex;align-items:center;gap:6px;background:#1f2937;border:1px solid #374151;border-radius:20px;padding:6px 14px;font-size:0.78rem;color:#9ca3af}
+.refresh-badge span{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.filters{padding:16px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #1f2937}
+.filter-btn{background:#1f2937;border:1px solid #374151;color:#9ca3af;padding:7px 16px;border-radius:20px;cursor:pointer;font-size:0.82rem;font-weight:600;transition:all 0.15s}
+.filter-btn.active,.filter-btn:hover{background:#f0c040;color:#111;border-color:#f0c040}
+.item-count{margin-left:auto;color:#6b7280;font-size:0.82rem}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;padding:24px;max-width:1400px;margin:0 auto}
+
+.card{background:#1f2937;border-radius:14px;overflow:hidden;border:1px solid #374151;transition:transform 0.18s,box-shadow 0.18s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.card-img{width:100%;height:200px;object-fit:cover;background:#111}
+.card-body{padding:14px;flex:1;display:flex;flex-direction:column}
+.card-cat{font-size:0.7rem;color:#f0c040;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.card-title{font-size:0.88rem;font-weight:600;color:#f3f4f6;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.price-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.deal-price{font-size:1.3rem;font-weight:900;color:#f0c040}
+.retail-price{font-size:0.82rem;color:#6b7280;text-decoration:line-through}
+.savings-badge{background:#14532d;color:#86efac;font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:10px;margin-left:auto}
+.shipping-tag{font-size:0.72rem;color:#22c55e;margin-bottom:12px}
+.buy-btn{background:linear-gradient(135deg,#b8860b,#f0c040);color:#111;border:none;padding:11px;border-radius:10px;font-weight:800;cursor:pointer;font-size:0.88rem;width:100%;transition:opacity 0.2s}
+.buy-btn:hover{opacity:0.88}
+
+.empty{text-align:center;padding:60px 24px;color:#6b7280;grid-column:1/-1}
+.empty h3{font-size:1.2rem;margin-bottom:8px;color:#9ca3af}
+
+/* Cart drawer */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200}
+.overlay.open{display:block}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:360px;max-width:100vw;background:#111827;z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.25s;box-shadow:-4px 0 24px rgba(0,0,0,0.4)}
+.drawer.open{transform:translateX(0)}
+.drawer-header{padding:18px 20px;border-bottom:1px solid #1f2937;display:flex;justify-content:space-between;align-items:center}
+.drawer-header h2{font-size:1rem;font-weight:700;color:#f0c040}
+.drawer-close{background:none;border:none;color:#9ca3af;font-size:1.4rem;cursor:pointer}
+.drawer-items{flex:1;overflow-y:auto;padding:16px}
+.cart-item{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #1f2937}
+.cart-item img{width:60px;height:60px;object-fit:cover;border-radius:8px;background:#1f2937}
+.cart-item-info{flex:1}
+.cart-item-title{font-size:0.82rem;color:#f3f4f6;margin-bottom:4px;line-height:1.3}
+.cart-item-price{font-size:0.9rem;font-weight:700;color:#f0c040}
+.cart-item-remove{background:none;border:none;color:#6b7280;cursor:pointer;font-size:0.78rem;margin-top:4px}
+.cart-empty{text-align:center;color:#6b7280;padding:40px 0;font-size:0.88rem}
+.drawer-footer{padding:16px 20px;border-top:1px solid #1f2937}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:14px;font-weight:700;font-size:1rem}
+.checkout-btn{width:100%;background:linear-gradient(135deg,#b8860b,#f0c040);color:#111;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:opacity 0.2s}
+.checkout-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+footer{text-align:center;padding:30px 24px;border-top:1px solid #1f2937;color:#6b7280;font-size:0.78rem;margin-top:20px}
+footer a{color:#9ca3af;text-decoration:none}
+footer a:hover{color:#f0c040}
+
+@media(max-width:500px){.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px}.hero h1{font-size:1.4rem}.drawer{width:100vw}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">
+    <div class="logo-icon">K</div>
+    <div><span class="logo-text">KLTUF</span><span class="logo-sub">DEALS</span></div>
+  </a>
+  <button class="cart-btn" onclick="openCart()">
+    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <h1>Hand-Picked Deals, Updated Daily</h1>
+  <p>Huge savings on electronics, home goods, toys &amp; more — free shipping on most items</p>
+  <div class="refresh-badge"><span></span> Deals refreshed automatically every 2 hours</div>
+</section>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterCat('all',this)">All Deals</button>
+  <button class="filter-btn" onclick="filterCat('electronics',this)">Electronics</button>
+  <button class="filter-btn" onclick="filterCat('home',this)">Home</button>
+  <button class="filter-btn" onclick="filterCat('toys',this)">Toys</button>
+  <button class="filter-btn" onclick="filterCat('sports',this)">Sports</button>
+  <button class="filter-btn" onclick="filterCat('beauty',this)">Beauty</button>
+  <span class="item-count" id="itemCount"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- Cart -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>Your Cart</h2>
+    <button class="drawer-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-footer">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>Checkout →</button>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 KLTUF Deals · <a href="https://kltuf.com">Main Store</a> · <a href="https://kltuf.com/policies.html">Policies</a></p>
+  <p style="margin-top:6px">All prices include our service fee. Items ship directly to you.</p>
+</footer>
+
+<script>
+const WORKER = 'https://tiny-morning-80f9.kltufllc.workers.dev';
+let products = [];
+let cart = JSON.parse(localStorage.getItem('kltuf_deals_cart') || '[]');
+let currentCat = 'all';
+
+async function loadProducts() {
+  try {
+    const r = await fetch('products.json?t=' + Date.now());
+    products = await r.json();
+    renderGrid();
+  } catch(e) {
+    document.getElementById('grid').innerHTML = '<div class="empty"><h3>Loading deals...</h3><p>Check back soon!</p></div>';
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const filtered = currentCat === 'all' ? products : products.filter(p => p.cat === currentCat);
+  document.getElementById('itemCount').textContent = filtered.length + ' deals';
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty"><h3>No deals in this category yet</h3><p>Check back soon!</p></div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(p => `
+    <div class="card" data-cat="${p.cat}">
+      <img class="card-img" src="${p.image}" alt="${escHtml(p.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1f2937/f0c040?text=Deal'">
+      <div class="card-body">
+        <div class="card-cat">${escHtml(p.cat)}</div>
+        <div class="card-title">${escHtml(p.title)}</div>
+        <div class="price-row">
+          <span class="deal-price">$${p.price.toFixed(2)}</span>
+          <span class="retail-price">$${p.retail.toFixed(2)}</span>
+          <span class="savings-badge">-${Math.round((1-p.price/p.retail)*100)}%</span>
+        </div>
+        <div class="shipping-tag">✅ Free Shipping</div>
+        <button class="buy-btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function addToCart(p) {
+  const existing = cart.find(i => i.id === p.id);
+  if (existing) { existing.qty = (existing.qty||1) + 1; }
+  else { cart.push({...p, qty:1}); }
+  saveCart();
+  openCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+  renderCart();
+}
+
+function saveCart() {
+  localStorage.setItem('kltuf_deals_cart', JSON.stringify(cart));
+  updateCartCount();
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s,i) => s + (i.qty||1), 0);
+  document.getElementById('cartCount').textContent = total;
+  document.getElementById('checkoutBtn').disabled = total === 0;
+}
+
+function renderCart() {
+  const el = document.getElementById('drawerItems');
+  if (!cart.length) { el.innerHTML = '<div class="cart-empty">Your cart is empty</div>'; }
+  else {
+    el.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <img src="${i.image}" alt="" onerror="this.src='https://placehold.co/60x60/1f2937/f0c040?text=K'">
+        <div class="cart-item-info">
+          <div class="cart-item-title">${escHtml(i.title.substring(0,60))}${i.title.length>60?'...':''}</div>
+          <div class="cart-item-price">$${(i.price*(i.qty||1)).toFixed(2)} ${i.qty>1?'(×'+i.qty+')':''}</div>
+          <button class="cart-item-remove" onclick="removeFromCart('${i.id}')">Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  const total = cart.reduce((s,i) => s + i.price*(i.qty||1), 0);
+  document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
+  updateCartCount();
+}
+
+function openCart() { document.getElementById('drawer').classList.add('open'); document.getElementById('overlay').classList.add('open'); renderCart(); }
+function closeCart() { document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+async function checkout() {
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = true; btn.textContent = 'Processing...';
+  try {
+    const items = cart.map(i => ({ title: i.title, price: i.price, qty: i.qty||1 }));
+    const r = await fetch(WORKER, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({items}) });
+    const data = await r.json();
+    if (data.url) {
+      cart = []; saveCart();
+      window.location.href = data.url;
+    } else {
+      alert('Checkout error. Please try again.');
+      btn.disabled = false; btn.textContent = 'Checkout →';
+    }
+  } catch(e) {
+    alert('Network error. Please try again.');
+    btn.disabled = false; btn.textContent = 'Checkout →';
+  }
+}
+
+updateCartCount();
+loadProducts();
+</script>
+</body>
+</html>
