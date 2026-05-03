@@ -3,10 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KLTUF Deals — Best Prices Online</title>
-<meta name="description" content="Hand-picked deals updated daily. Huge discounts on electronics, home goods, toys, and more. Free shipping available.">
+
+<!-- Primary SEO -->
+<title>KLTUF Deals — Up to 50% Off Electronics, Home, Toys & More | Free Shipping</title>
+<meta name="description" content="Shop 60+ hand-picked deals updated every 2 hours. Save up to 50% on electronics, home goods, toys, sports gear, beauty products, phones, jewelry and more. Free shipping on all items.">
+<meta name="keywords" content="online deals, cheap electronics, discount home goods, free shipping deals, best prices online, daily deals, clearance sale, toys deals, sports equipment deals, beauty deals">
+<meta name="author" content="KLTUF Deals">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://deals.kltuf.com/">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://deals.kltuf.com/">
+<meta property="og:title" content="KLTUF Deals — Up to 50% Off + Free Shipping">
+<meta property="og:description" content="60+ hand-picked deals updated every 2 hours. Electronics, home goods, toys, sports, beauty and more — all with free shipping.">
+<meta property="og:image" content="https://deals.kltuf.com/og-image.png">
+<meta property="og:site_name" content="KLTUF Deals">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KLTUF Deals — Up to 50% Off + Free Shipping">
+<meta name="twitter:description" content="60+ hand-picked deals updated every 2 hours. Electronics, home, toys, sports, beauty and more.">
+<meta name="twitter:image" content="https://deals.kltuf.com/og-image.png">
+
+<!-- Performance -->
+<link rel="preconnect" href="https://tiny-morning-80f9.kltufllc.workers.dev">
+<link rel="dns-prefetch" href="https://api.stripe.com">
+
+<!-- Security -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://tiny-morning-80f9.kltufllc.workers.dev https://api.stripe.com https://www.paypal.com;">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+<!-- JSON-LD: Organization + Website -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "KLTUF Deals",
+      "url": "https://deals.kltuf.com",
+      "logo": "https://deals.kltuf.com/og-image.png",
+      "contactPoint": {"@type": "ContactPoint", "email": "kltufllc@gmail.com", "contactType": "customer service"}
+    },
+    {
+      "@type": "WebSite",
+      "name": "KLTUF Deals",
+      "url": "https://deals.kltuf.com",
+      "description": "Hand-picked deals updated every 2 hours with free shipping on all items."
+    }
+  ]
+}
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#f3f4f6;min-height:100vh}
@@ -92,7 +142,7 @@ footer a:hover{color:#f0c040}
 
 <section class="hero">
   <h1>Hand-Picked Deals, Updated Daily</h1>
-  <p>Huge savings on electronics, home goods, toys &amp; more — free shipping on most items</p>
+  <p>Up to 50% off electronics, home goods, toys, sports &amp; more — free shipping on every item</p>
   <div class="refresh-badge"><span></span> Deals refreshed automatically every 2 hours</div>
 </section>
 
@@ -103,6 +153,11 @@ footer a:hover{color:#f0c040}
   <button class="filter-btn" onclick="filterCat('toys',this)">Toys</button>
   <button class="filter-btn" onclick="filterCat('sports',this)">Sports</button>
   <button class="filter-btn" onclick="filterCat('beauty',this)">Beauty</button>
+  <button class="filter-btn" onclick="filterCat('phones',this)">Phones</button>
+  <button class="filter-btn" onclick="filterCat('jewelry',this)">Jewelry</button>
+  <button class="filter-btn" onclick="filterCat('bags',this)">Bags</button>
+  <button class="filter-btn" onclick="filterCat('office',this)">Office</button>
+  <button class="filter-btn" onclick="filterCat('pets',this)">Pets</button>
   <span class="item-count" id="itemCount"></span>
 </div>
 
@@ -123,8 +178,8 @@ footer a:hover{color:#f0c040}
 </div>
 
 <footer>
-  <p>© 2026 KLTUF Deals · <a href="https://kltuf.com">Main Store</a> · <a href="https://kltuf.com/policies.html">Policies</a></p>
-  <p style="margin-top:6px">All prices include our service fee. Items ship directly to you.</p>
+  <p>© 2026 KLTUF Deals · <a href="https://kltuf.com">Main Store</a> · <a href="https://kltuf.com/policies.html">Policies</a> · <a href="mailto:kltufllc@gmail.com">Contact</a></p>
+  <p style="margin-top:6px">All prices include our service fee. Items ship directly to you within 7–15 business days.</p>
 </footer>
 
 <script>
@@ -138,9 +193,33 @@ async function loadProducts() {
     const r = await fetch('products.json?t=' + Date.now());
     products = await r.json();
     renderGrid();
+    injectProductSchema();
   } catch(e) {
     document.getElementById('grid').innerHTML = '<div class="empty"><h3>Loading deals...</h3><p>Check back soon!</p></div>';
   }
+}
+
+function injectProductSchema() {
+  const items = products.slice(0, 20).map((p, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "item": {
+      "@type": "Product",
+      "name": p.title,
+      "image": p.image,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": p.price.toFixed(2),
+        "availability": "https://schema.org/InStock",
+        "seller": {"@type": "Organization", "name": "KLTUF Deals"}
+      }
+    }
+  }));
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.text = JSON.stringify({"@context":"https://schema.org","@type":"ItemList","name":"KLTUF Deals","itemListElement":items});
+  document.head.appendChild(script);
 }
 
 function renderGrid() {
