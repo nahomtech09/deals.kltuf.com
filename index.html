@@ -232,8 +232,8 @@ async function checkout() {
   const btn = document.getElementById('checkoutBtn');
   btn.disabled = true; btn.textContent = 'Processing...';
   try {
-    const items = cart.map(i => ({ title: i.title, price: i.price, qty: i.qty||1 }));
-    const r = await fetch(WORKER, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({items}) });
+    const items = cart.map(i => ({ title: i.title, price: i.price, qty: i.qty||1, pid: i.pid||'', vid: i.vid||'' }));
+    const r = await fetch(WORKER, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({items, source:'deals'}) });
     const data = await r.json();
     if (data.url) {
       cart = []; saveCart();
