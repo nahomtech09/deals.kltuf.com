@@ -85,7 +85,15 @@ header{background:#111827;padding:14px 24px;display:flex;align-items:center;just
 
 .card{background:#1f2937;border-radius:14px;overflow:hidden;border:1px solid #374151;transition:transform 0.18s,box-shadow 0.18s;display:flex;flex-direction:column}
 .card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-.card-img{width:100%;height:200px;object-fit:cover;background:#111}
+.card-img-wrap{position:relative;width:100%;height:200px;background:#111;overflow:hidden}
+.card-img{width:100%;height:200px;object-fit:cover;background:#111;display:block;transition:opacity 0.2s}
+.card-img-wrap .arr{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:none;color:#fff;font-size:1.1rem;width:28px;height:40px;cursor:pointer;z-index:2;display:none;align-items:center;justify-content:center;border-radius:4px}
+.card-img-wrap:hover .arr{display:flex}
+.arr.prev{left:4px}
+.arr.next{right:4px}
+.img-dots{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px}
+.img-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:background 0.15s}
+.img-dot.active{background:#f0c040}
 .card-body{padding:14px;flex:1;display:flex;flex-direction:column}
 .card-cat{font-size:0.7rem;color:#f0c040;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
 .card-title{font-size:0.88rem;font-weight:600;color:#f3f4f6;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -230,9 +238,17 @@ function renderGrid() {
     grid.innerHTML = '<div class="empty"><h3>No deals in this category yet</h3><p>Check back soon!</p></div>';
     return;
   }
-  grid.innerHTML = filtered.map(p => `
-    <div class="card" data-cat="${p.cat}">
-      <img class="card-img" src="${p.image}" alt="${escHtml(p.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1f2937/f0c040?text=Deal'">
+  grid.innerHTML = filtered.map(p => {
+    const imgs = (p.images && p.images.length > 1) ? p.images : [p.image];
+    const dots = imgs.length > 1 ? `<div class="img-dots">${imgs.map((_,i)=>`<div class="img-dot${i===0?' active':''}" onclick="goImg(this,${i})"></div>`).join('')}</div>` : '';
+    const arrows = imgs.length > 1 ? `<button class="arr prev" onclick="prevImg(this)">&#8249;</button><button class="arr next" onclick="nextImg(this)">&#8250;</button>` : '';
+    return `
+    <div class="card" data-cat="${p.cat}" data-imgs='${JSON.stringify(imgs)}' data-img-idx="0">
+      <div class="card-img-wrap">
+        ${arrows}
+        <img class="card-img" src="${imgs[0]}" alt="${escHtml(p.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1f2937/f0c040?text=Deal'">
+        ${dots}
+      </div>
       <div class="card-body">
         <div class="card-cat">${escHtml(p.cat)}</div>
         <div class="card-title">${escHtml(p.title)}</div>
@@ -245,7 +261,8 @@ function renderGrid() {
         <button class="buy-btn" onclick='addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Add to Cart</button>
       </div>
     </div>
-  `).join('');
+  `};
+  }).join('');
 }
 
 function escHtml(s) {
@@ -325,6 +342,31 @@ async function checkout() {
     alert('Network error. Please try again.');
     btn.disabled = false; btn.textContent = 'Checkout →';
   }
+}
+
+function goImg(dot, idx) {
+  const card = dot.closest('.card');
+  const imgs = JSON.parse(card.dataset.imgs);
+  card.dataset.imgIdx = idx;
+  card.querySelector('.card-img').src = imgs[idx];
+  card.querySelectorAll('.img-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+}
+function nextImg(btn) {
+  const card = btn.closest('.card');
+  const imgs = JSON.parse(card.dataset.imgs);
+  const idx = (parseInt(card.dataset.imgIdx||0) + 1) % imgs.length;
+  goImg(card.querySelector('.img-dot'), idx);
+  card.querySelectorAll('.img-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+  card.querySelector('.card-img').src = imgs[idx];
+  card.dataset.imgIdx = idx;
+}
+function prevImg(btn) {
+  const card = btn.closest('.card');
+  const imgs = JSON.parse(card.dataset.imgs);
+  const idx = (parseInt(card.dataset.imgIdx||0) - 1 + imgs.length) % imgs.length;
+  card.querySelector('.card-img').src = imgs[idx];
+  card.querySelectorAll('.img-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+  card.dataset.imgIdx = idx;
 }
 
 updateCartCount();
