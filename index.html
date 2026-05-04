@@ -101,6 +101,7 @@ header{background:#111827;padding:14px 24px;display:flex;align-items:center;just
 .deal-price{font-size:1.3rem;font-weight:900;color:#f0c040}
 .retail-price{font-size:0.82rem;color:#6b7280;text-decoration:line-through}
 .savings-badge{background:#14532d;color:#86efac;font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:10px;margin-left:auto}
+.trending-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#dc2626,#f97316);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 9px;border-radius:20px;z-index:3;letter-spacing:0.3px}
 .shipping-tag{font-size:0.72rem;color:#22c55e;margin-bottom:12px}
 .buy-btn{background:linear-gradient(135deg,#b8860b,#f0c040);color:#111;border:none;padding:11px;border-radius:10px;font-weight:800;cursor:pointer;font-size:0.88rem;width:100%;transition:opacity 0.2s}
 .buy-btn:hover{opacity:0.88}
@@ -246,6 +247,7 @@ function renderGrid() {
     return `
     <div class="card" data-cat="${p.cat}" data-imgs='${JSON.stringify(imgs)}' data-img-idx="0">
       <div class="card-img-wrap">
+        ${p.trending ? '<div class="trending-badge">🔥 Trending</div>' : ''}
         ${arrows}
         <img class="card-img" src="${imgs[0]}" alt="${escHtml(p.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1f2937/f0c040?text=Deal'">
         ${dots}
