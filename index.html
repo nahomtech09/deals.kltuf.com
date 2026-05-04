@@ -87,6 +87,13 @@ footer a{color:#9ca3af;text-decoration:none}
 footer a:hover{color:#f0c040}
 
 @media(max-width:500px){.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px}.hero h1{font-size:1.4rem}.drawer{width:100vw}}
+
+.search-wrap{flex:1;display:flex;max-width:480px;margin:0 14px;}
+.search-wrap input{flex:1;background:#1f2937;border:1px solid #374151;border-right:none;border-radius:8px 0 0 8px;padding:8px 14px;color:#f0c040;font-size:0.9rem;outline:none;}
+.search-wrap input::placeholder{color:#6b7280;}
+.search-wrap input:focus{border-color:#f0c040;}
+.search-wrap button{background:#f0c040;color:#111;border:none;border-radius:0 8px 8px 0;padding:8px 16px;font-weight:700;cursor:pointer;font-size:0.88rem;}
+.search-wrap button:hover{background:#f5d060;}
 </style>
 </head>
 <body>
@@ -96,7 +103,11 @@ footer a:hover{color:#f0c040}
     <div class="logo-icon">K</div>
     <div><span class="logo-text">KLTUF</span><span class="logo-sub">DEALS</span></div>
   </a>
-  <button class="cart-btn" onclick="openCart()">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Search deals..." oninput="renderGrid()">
+    <button onclick="renderGrid()">Search</button>
+  </div>
+    <button class="cart-btn" onclick="openCart()">
     🛒 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
@@ -233,7 +244,12 @@ async function loadProducts() {
 
 function renderGrid() {
   const grid = document.getElementById('grid');
-  const filtered = currentCat === 'all' ? products : products.filter(p => p.cat === currentCat);
+  const query = (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '').toLowerCase().trim();
+  const filtered = products.filter(p => {
+    const catMatch = currentCat === 'all' || p.cat === currentCat;
+    const searchMatch = !query || (p.title || '').toLowerCase().includes(query) || (p.cat || '').toLowerCase().includes(query);
+    return catMatch && searchMatch;
+  });
   document.getElementById('itemCount').textContent = filtered.length + ' deals';
   if (!filtered.length) {
     grid.innerHTML = '<div class="empty"><h3>No deals in this category yet</h3><p>Check back soon!</p></div>';
